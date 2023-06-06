@@ -111,7 +111,11 @@ class InputCameraActivity: BaseActivity<CalculatorViewModel>(),
             .addOnSuccessListener { result ->
                 if(result.textBlocks.isNotEmpty()){
                     finalResult = result.textBlocks[0].text
-                    Toast.makeText(this, "result: $finalResult", Toast.LENGTH_SHORT).show()
+                    finalResult?.let {
+                        val calculateResult = viewModel.calculateFromString(it)
+                        Toast.makeText(this, "RESULT: $calculateResult", Toast.LENGTH_SHORT).show()
+                    }
+                    //Toast.makeText(this, "result: $finalResult", Toast.LENGTH_SHORT).show()
                 }
                 val resultText = result.text
                 Timber.i("resultText: $resultText")
