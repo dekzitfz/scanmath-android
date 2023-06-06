@@ -8,12 +8,23 @@ import dagger.multibindings.IntoMap
 import dagger.Binds
 import id.adiandrea.scanmath.base.AppViewModelFactory
 import androidx.lifecycle.ViewModelProvider
+import id.adiandrea.scanmath.feature.CalculatorViewModel
 import id.adiandrea.scanmath.feature.detailpokemon.DetailPokemonViewModel
 import id.adiandrea.scanmath.feature.detailpokemon.basestat.BaseStatViewModel
 import id.adiandrea.scanmath.feature.detailpokemon.moves.MovesViewModel
+import id.adiandrea.scanmath.feature.main.MainViewModel
 
 @Module
 abstract class ViewModelModule {
+    @Binds
+    @IntoMap
+    @ViewModelKey(MainViewModel::class)
+    abstract fun bindMainViewModel(mainViewModel: MainViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CalculatorViewModel::class)
+    abstract fun bindCalculatorViewModel(calculatorViewModel: CalculatorViewModel): ViewModel
 
     @Binds
     @IntoMap

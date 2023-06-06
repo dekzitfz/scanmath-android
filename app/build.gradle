@@ -77,6 +77,7 @@ ext {
     daggerVersion = '2.37'
     room = '2.4.3'
     lifecycle_version = '2.5.1'
+    camerax_version = "1.2.2"
 }
 
 dependencies {
@@ -145,4 +146,12 @@ dependencies {
     implementation "com.google.dagger:dagger-android:$daggerVersion"
     implementation "com.google.dagger:dagger-android-support:$daggerVersion"
     kapt "com.google.dagger:dagger-android-processor:$daggerVersion"
+
+    //mlkit
+    implementation 'com.google.mlkit:text-recognition:16.0.0'
+
+    //camerax
+    implementation "androidx.camera:camera-camera2:$camerax_version"
+    implementation "androidx.camera:camera-lifecycle:$camerax_version"
+    implementation "androidx.camera:camera-view:$camerax_version"
 }
