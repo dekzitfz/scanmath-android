@@ -10,4 +10,6 @@ data class History(
     val arg2: Int = 0,
     var symbol: String = "",
     val result: Double = 0.0
-)
+) {
+    fun getDisplayedExpression() = "$arg1$symbol$arg2"
+}

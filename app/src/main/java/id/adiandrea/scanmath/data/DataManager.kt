@@ -37,6 +37,10 @@ class DataManager
         localDatabase.HistoryDao().insert(history)
     }
 
+    fun loadHistoryFromLocal(): MutableList<History> {
+        return localDatabase.HistoryDao().getAll()
+    }
+
     /* ---------------------------------------- Network ----------------------------------------- */
 
     suspend fun reqPokemon(page: Int, limit: Int) = api.requestListPokemon(limit, page)
