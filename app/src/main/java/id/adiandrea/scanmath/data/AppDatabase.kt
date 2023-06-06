@@ -6,12 +6,16 @@ import id.adiandrea.scanmath.data.local.pokemon.LocalPokemon
 import id.adiandrea.scanmath.data.local.pokemon.LocalPokemonDao
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.room.migration.Migration
+import id.adiandrea.scanmath.data.local.history.History
+import id.adiandrea.scanmath.data.local.history.HistoryDao
 
 
-@Database(entities = [LocalPokemon::class], version = 1) //TODO bump version to 2 to test migration from v1 to v2
+@Database(entities = [LocalPokemon::class, History::class], version = 1) //TODO bump version to 2 to test migration from v1 to v2
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun PokemonDao(): LocalPokemonDao
+
+    abstract fun HistoryDao(): HistoryDao
 
     companion object {
         val MIGRATION_1_2 = object : Migration(1, 2) {

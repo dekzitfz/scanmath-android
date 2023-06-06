@@ -10,6 +10,7 @@ import javax.inject.Inject
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 import androidx.paging.DataSource
+import id.adiandrea.scanmath.data.local.history.History
 import id.adiandrea.scanmath.model.api.detailpokemon.DetailPokemonResponse
 
 
@@ -30,6 +31,10 @@ class DataManager
 
     fun loadAllPokemonFromLocal(): DataSource.Factory<Int, LocalPokemon> {
         return localDatabase.PokemonDao().loadAllPokemonPaged()
+    }
+
+    fun saveHistoryToLocal(history: History) {
+        localDatabase.HistoryDao().insert(history)
     }
 
     /* ---------------------------------------- Network ----------------------------------------- */

@@ -75,7 +75,7 @@ android {
 ext {
     retrofit = '2.9.0'
     daggerVersion = '2.37'
-    room = '2.4.3'
+    room = '2.5.1'
     lifecycle_version = '2.5.1'
     camerax_version = "1.2.2"
 }

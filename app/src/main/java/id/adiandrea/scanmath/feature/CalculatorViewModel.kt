@@ -1,14 +1,25 @@
 package id.adiandrea.scanmath.feature
 
 import android.annotation.SuppressLint
+import androidx.lifecycle.viewModelScope
 import id.adiandrea.scanmath.base.BaseViewModel
 import id.adiandrea.scanmath.data.DataManager
+import id.adiandrea.scanmath.data.local.history.History
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @SuppressLint("CheckResult")
 class CalculatorViewModel
 @Inject constructor(private val dataManager: DataManager) : BaseViewModel() {
+
+    internal var latestCalculation: History? = null
+
+    fun saveResultToLocalDatabase(history: History) = CoroutineScope(Dispatchers.IO).launch {
+        dataManager.saveHistoryToLocal(history)
+    }
 
     fun calculateFromString(text: String): Double {
         Timber.i("data to proccess: $text")
@@ -36,6 +47,12 @@ class CalculatorViewModel
                     "*" -> { result = arg1.toDouble() * arg2.toDouble() }
                     "/" -> { result = arg1.toDouble() / arg2.toDouble() }
                 }
+                latestCalculation = History(
+                    arg1 = arg1,
+                    arg2 = arg2,
+                    symbol = symbol,
+                    result = result
+                )
             }else{
                 Timber.w("it has more than 2 arguments!")
             }
