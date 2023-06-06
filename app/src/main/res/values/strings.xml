@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">scanmath</string>
+    <string name="success">success</string>
+    <string name="running">running</string>
+</resources>
