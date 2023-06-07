@@ -18,6 +18,7 @@ class App : Application(), HasAndroidInjector {
 
     override fun onCreate() {
         super.onCreate()
+        instance = this
 
         if(BuildConfig.DEBUG){
             Timber.plant(Timber.DebugTree())
@@ -33,4 +34,8 @@ class App : Application(), HasAndroidInjector {
     }
 
     override fun androidInjector(): AndroidInjector<Any> = androidInjector
+
+    companion object {
+        lateinit var instance: App
+    }
 }

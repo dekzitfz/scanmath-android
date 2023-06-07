@@ -1,11 +1,11 @@
 package id.adiandrea.scanmath.feature
 
 import android.annotation.SuppressLint
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import id.adiandrea.scanmath.base.BaseViewModel
 import id.adiandrea.scanmath.data.DataManager
 import id.adiandrea.scanmath.data.local.history.History
+import id.adiandrea.scanmath.util.Constant.Companion.VALUE_STORAGE_DATABASE
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,7 +18,17 @@ class CalculatorViewModel
 
     internal var latestCalculation: History? = null
 
-    fun saveResultToLocalDatabase(history: History) = CoroutineScope(Dispatchers.IO).launch {
+    fun getCurrentStorage() = dataManager.getCurrentSelectedStorage()
+
+    fun saveData(history: History){
+        if(dataManager.getCurrentSelectedStorage() == VALUE_STORAGE_DATABASE){
+            saveResultToLocalDatabase(history)
+        }else{
+            dataManager.saveToEncryptedFile(Gson().toJson(history))
+        }
+    }
+
+    private fun saveResultToLocalDatabase(history: History) = CoroutineScope(Dispatchers.IO).launch {
         dataManager.saveHistoryToLocal(history)
     }
 

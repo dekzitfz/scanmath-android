@@ -101,10 +101,11 @@ class InputCameraActivity: BaseActivity<CalculatorViewModel>(),
                     finalResult = result.textBlocks[0].text
                     finalResult?.let {
                         val calculateResult = viewModel.calculateFromString(it)
-                        viewModel.latestCalculation?.let {
-                            viewModel.saveResultToLocalDatabase(it)
+                        viewModel.latestCalculation?.let { history ->
+                            viewModel.saveData(history)
                         }
-                        Toast.makeText(this, "RESULT: $calculateResult", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "RESULT: $calculateResult", Toast.LENGTH_LONG).show()
+                        this@InputCameraActivity.finish()
                     }
                 }
                 val resultText = result.text
