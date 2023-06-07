@@ -41,7 +41,6 @@ class MainActivity: BaseActivity<MainViewModel>() {
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            // PERMISSION GRANTED
             startActivity(
                 Intent(this, InputCameraActivity::class.java)
             )
@@ -58,8 +57,10 @@ class MainActivity: BaseActivity<MainViewModel>() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        observeViewModel()
 
         binding.actionImageInput.setOnClickListener {
+            @Suppress("KotlinConstantConditions")
             if(BuildConfig.PICK_IMAGE_FROM == "CAMERA"){
                 requestPermissionLauncher.launch(Manifest.permission.CAMERA)
             }else{
@@ -80,7 +81,9 @@ class MainActivity: BaseActivity<MainViewModel>() {
             }
             viewModel.loadHistory()
         }
+    }
 
+    private fun observeViewModel() {
         viewModel.onWarningMessage.observe(this) {
             Toast.makeText(this, it, Toast.LENGTH_LONG).show()
         }
