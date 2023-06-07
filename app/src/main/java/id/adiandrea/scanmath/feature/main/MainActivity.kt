@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
+import id.adiandrea.scanmath.BuildConfig
 import id.adiandrea.scanmath.R
 import id.adiandrea.scanmath.base.BaseActivity
 import id.adiandrea.scanmath.databinding.ActivityMainBinding
@@ -41,8 +42,12 @@ class MainActivity: BaseActivity<MainViewModel>() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.actionCameraInput.setOnClickListener {
-            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+        binding.actionImageInput.setOnClickListener {
+            if(BuildConfig.PICK_IMAGE_FROM == "CAMERA"){
+                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }else{
+                //todo launch file picker
+            }
         }
 
         binding.rgStorage.setOnCheckedChangeListener { _, id ->

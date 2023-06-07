@@ -31,34 +31,33 @@ android {
     }
 
     buildTypes {
-        release {
-            minifyEnabled true
-            shrinkResources true
-            debuggable false
-            proguardFile "proguard-rules.pro"
-            proguardFile "proguard-glide.pro"
-            proguardFile "proguard-retrofit.pro"
-            proguardFile "proguard-gson.pro"
-        }
-        debug {
+        camera {
             minifyEnabled false
+            shrinkResources false
             debuggable true
+            buildConfigField "String", "PICK_IMAGE_FROM", '"CAMERA"'
+        }
+        file {
+            minifyEnabled false
+            shrinkResources false
+            debuggable true
+            buildConfigField "String", "PICK_IMAGE_FROM", '"FILE"'
         }
     }
 
     flavorDimensions "mode"
     productFlavors {
-        prod {
+        green {
             dimension "mode"
-            applicationId "id.adiandrea.scanmath"
-            buildConfigField "String", "BASE_URL", '"https://pokeapi.co/api/v2/"'
-            buildConfigField "boolean", "ENABLE_CRASH_REPORT", "true"
-        }
-        dev {
-            dimension "mode"
-            applicationId "id.adiandrea.scanmath.dev"
-            buildConfigField "String", "BASE_URL", '"https://pokeapi.co/api/v2/"'
+            buildConfigField "String", "BASE_URL", '"https://sample-api/"'
             buildConfigField "boolean", "ENABLE_CRASH_REPORT", "false"
+            manifestPlaceholders = [appTheme:"@style/GreenTheme"]
+        }
+        red {
+            dimension "mode"
+            buildConfigField "String", "BASE_URL", '"https://sample-api/"'
+            buildConfigField "boolean", "ENABLE_CRASH_REPORT", "false"
+            manifestPlaceholders = [appTheme:"@style/RedTheme"]
         }
     }
 
