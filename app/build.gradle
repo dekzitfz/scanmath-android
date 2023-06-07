@@ -22,6 +22,18 @@ android {
         }
     }
 
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            def buildType = ""
+            if(variant.buildType.name == "file"){
+                buildType = "filesystem"
+            }else{
+                buildType = "built-in-camera"
+            }
+            outputFileName = "app-${variant.productFlavors[0].name}-${buildType}.apk"
+        }
+    }
+
     buildFeatures {
         viewBinding true
     }
@@ -31,6 +43,18 @@ android {
     }
 
     buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            debuggable true
+            buildConfigField "String", "PICK_IMAGE_FROM", '""'
+        }
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            debuggable true
+            buildConfigField "String", "PICK_IMAGE_FROM", '""'
+        }
         camera {
             minifyEnabled false
             shrinkResources false
