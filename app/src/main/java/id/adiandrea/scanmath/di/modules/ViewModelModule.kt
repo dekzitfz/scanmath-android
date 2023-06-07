@@ -7,7 +7,7 @@ import dagger.multibindings.IntoMap
 import dagger.Binds
 import id.adiandrea.scanmath.base.AppViewModelFactory
 import androidx.lifecycle.ViewModelProvider
-import id.adiandrea.scanmath.feature.CalculatorViewModel
+import id.adiandrea.scanmath.feature.scan.InputCameraViewModel
 import id.adiandrea.scanmath.feature.main.MainViewModel
 
 @Module
@@ -19,8 +19,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(CalculatorViewModel::class)
-    abstract fun bindCalculatorViewModel(calculatorViewModel: CalculatorViewModel): ViewModel
+    @ViewModelKey(InputCameraViewModel::class)
+    abstract fun bindCalculatorViewModel(inputCameraViewModel: InputCameraViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: AppViewModelFactory): ViewModelProvider.Factory

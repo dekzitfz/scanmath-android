@@ -16,31 +16,28 @@ import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import id.adiandrea.scanmath.base.BaseActivity
 import id.adiandrea.scanmath.databinding.ActivityInputCameraBinding
-import id.adiandrea.scanmath.feature.CalculatorViewModel
+import id.adiandrea.scanmath.util.LoadingDialog
 import timber.log.Timber
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class InputCameraActivity: BaseActivity<CalculatorViewModel>() {
-    override val viewModelClass: Class<CalculatorViewModel> = CalculatorViewModel::class.java
+class InputCameraActivity: BaseActivity<InputCameraViewModel>() {
+    override val viewModelClass: Class<InputCameraViewModel> = InputCameraViewModel::class.java
     private lateinit var binding: ActivityInputCameraBinding
 
     private lateinit var recognizer: TextRecognizer
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var imageCapture: ImageCapture
+    private var loadingView: LoadingDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityInputCameraBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        observeViewModel()
 
         cameraExecutor = Executors.newSingleThreadExecutor()
         recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
-
-        viewModel.onWarningMessage.observe(this) {
-            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-        }
-
         startCamera()
 
         binding.btnTakePicture.setOnClickListener {
@@ -70,20 +67,38 @@ class InputCameraActivity: BaseActivity<CalculatorViewModel>() {
         super.onDestroy()
     }
 
+    private fun observeViewModel() {
+        viewModel.onWarningMessage.observe(this) {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        }
+
+        viewModel.isLoading.observe(this) {
+            if(it){
+                loadingView = LoadingDialog()
+                loadingView?.isCancelable = false
+                loadingView?.show(supportFragmentManager, null)
+            }else{
+                loadingView?.dismiss()
+            }
+        }
+
+        viewModel.onProcessCompleted.observe(this) {
+            this@InputCameraActivity.finish()
+        }
+    }
+
     private fun startCamera() {
         Timber.i("starting camera...")
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
-
             val preview = Preview.Builder()
                 .build()
                 .also {
                     it.setSurfaceProvider(binding.previewView.surfaceProvider)
                 }
             imageCapture = ImageCapture.Builder().build()
-
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
             try {
