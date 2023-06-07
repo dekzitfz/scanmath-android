@@ -27,14 +27,7 @@ class MainViewModel
 
     fun loadHistory(){
         if(getCurrentStorage() == VALUE_STORAGE_FILE){
-            val result = mutableListOf<History>()
-            val stringData = dataManager.loadDataFromEncryptedFile()
-            if(stringData.isNotEmpty()){
-                result.add(
-                    Gson().fromJson(stringData, History::class.java)
-                )
-            }
-            onHistoryLoaded.postValue(result)
+            onHistoryLoaded.postValue(dataManager.loadDataFromEncryptedFile())
         }else{
             loadHistoryFromLocalDatabase()
         }

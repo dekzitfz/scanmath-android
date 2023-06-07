@@ -28,13 +28,11 @@ class DataManager
 
     /* ------------------------------------- EncryptedFile -------------------------------------- */
 
-    fun saveToEncryptedFile(data: String) {
+    fun saveToEncryptedFile(data: MutableList<History>) {
         encryptedFile.saveData(data)
     }
 
-    fun loadDataFromEncryptedFile(): String {
-        return encryptedFile.getData()
-    }
+    fun loadDataFromEncryptedFile(): MutableList<History> = encryptedFile.getData()
 
     /* -------------------------------------- SharedPrefs --------------------------------------- */
 

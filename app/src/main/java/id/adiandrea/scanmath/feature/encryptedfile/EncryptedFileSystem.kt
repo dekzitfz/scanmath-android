@@ -2,7 +2,9 @@ package id.adiandrea.scanmath.feature.encryptedfile
 
 import androidx.security.crypto.EncryptedFile
 import androidx.security.crypto.MasterKey
+import com.google.gson.Gson
 import id.adiandrea.scanmath.App
+import id.adiandrea.scanmath.data.local.history.History
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
@@ -21,19 +23,27 @@ class EncryptedFileSystem(masterKey: MasterKey) {
         EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB
     ).build()
 
-    fun saveData(data: String) {
+    fun saveData(data: MutableList<History>) {
+        val file = File(App.instance.filesDir, FILE_NAME)
+        if (file.exists()) {
+            file.delete()
+        }
+
         encryptedFile.openFileOutput().apply {
-            write(data.toByteArray(StandardCharsets.UTF_8))
+            write(Gson().toJson(data).toByteArray(StandardCharsets.UTF_8))
             flush()
             close()
         }
     }
 
-    fun getData(): String {
-        var result = ""
+    fun getData(): MutableList<History> {
+        var result = mutableListOf<History>()
         try {
             val bufferReader = encryptedFile.openFileInput().bufferedReader()
-            result = bufferReader.readText()
+            val data = bufferReader.readText()
+            if(data.isNotEmpty()){
+                result = Gson().fromJson(data, Array<History>::class.java).toMutableList()
+            }
             bufferReader.close()
         } catch (exception: IOException) {
             Timber.w(exception)

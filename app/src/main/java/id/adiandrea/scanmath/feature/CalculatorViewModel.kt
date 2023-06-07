@@ -24,7 +24,10 @@ class CalculatorViewModel
         if(dataManager.getCurrentSelectedStorage() == VALUE_STORAGE_DATABASE){
             saveResultToLocalDatabase(history)
         }else{
-            dataManager.saveToEncryptedFile(Gson().toJson(history))
+            //append data
+            val data = dataManager.loadDataFromEncryptedFile()
+            data.add(history)
+            dataManager.saveToEncryptedFile(data)
         }
     }
 
