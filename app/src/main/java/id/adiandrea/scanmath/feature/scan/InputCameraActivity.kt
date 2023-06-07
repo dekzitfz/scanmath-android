@@ -21,8 +21,7 @@ import timber.log.Timber
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class InputCameraActivity: BaseActivity<CalculatorViewModel>(),
-    ImageAnalyzer.ImageAnalyzerListener {
+class InputCameraActivity: BaseActivity<CalculatorViewModel>() {
     override val viewModelClass: Class<CalculatorViewModel> = CalculatorViewModel::class.java
     private lateinit var binding: ActivityInputCameraBinding
 
@@ -38,6 +37,10 @@ class InputCameraActivity: BaseActivity<CalculatorViewModel>(),
         cameraExecutor = Executors.newSingleThreadExecutor()
         recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
+        viewModel.onWarningMessage.observe(this) {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        }
+
         startCamera()
 
         binding.btnTakePicture.setOnClickListener {
@@ -49,7 +52,7 @@ class InputCameraActivity: BaseActivity<CalculatorViewModel>(),
                         val mediaImage = imageProxy.image
                         if (mediaImage != null) {
                             val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
-                            onImageCaptured(image)
+                            viewModel.processImageFromCamera(image)
                         }
                     }
                     override fun onError(exception: ImageCaptureException) {
@@ -91,51 +94,6 @@ class InputCameraActivity: BaseActivity<CalculatorViewModel>(),
                 Timber.e(exc)
             }
         }, ContextCompat.getMainExecutor(this))
-    }
-
-    override fun onImageCaptured(image: InputImage) {
-        var finalResult: String?
-        val resultTask = recognizer.process(image)
-            .addOnSuccessListener { result ->
-                if(result.textBlocks.isNotEmpty()){
-                    finalResult = result.textBlocks[0].text
-                    finalResult?.let {
-                        val calculateResult = viewModel.calculateFromString(it)
-                        viewModel.latestCalculation?.let { history ->
-                            viewModel.saveData(history)
-                        }
-                        Toast.makeText(this, "RESULT: $calculateResult", Toast.LENGTH_LONG).show()
-                        this@InputCameraActivity.finish()
-                    }
-                }
-                val resultText = result.text
-                Timber.i("resultText: $resultText")
-                for (block in result.textBlocks) {
-                    val blockText = block.text
-                    Timber.i("blockText: $blockText")
-                    val blockCornerPoints = block.cornerPoints
-                    val blockFrame = block.boundingBox
-                    if(block.lines.isNotEmpty()){
-                        //Toast.makeText(this, "result: ${block.lines[0].text}", Toast.LENGTH_LONG).show()
-                    }
-                    for (line in block.lines) {
-                        val lineText = line.text
-                        Timber.i("lineText: $lineText")
-                        val lineCornerPoints = line.cornerPoints
-                        val lineFrame = line.boundingBox
-                        for (element in line.elements) {
-                            val elementText = element.text
-                            Timber.i("elementText: $elementText")
-                            val elementCornerPoints = element.cornerPoints
-                            val elementFrame = element.boundingBox
-                        }
-                    }
-                }
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(this, e.localizedMessage, Toast.LENGTH_SHORT).show()
-                Timber.e(e)
-            }
     }
 
 }

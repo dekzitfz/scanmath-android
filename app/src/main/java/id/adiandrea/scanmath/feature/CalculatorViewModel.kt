@@ -1,11 +1,16 @@
 package id.adiandrea.scanmath.feature
 
 import android.annotation.SuppressLint
-import com.google.gson.Gson
+import androidx.lifecycle.MutableLiveData
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.TextRecognizer
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import id.adiandrea.scanmath.base.BaseViewModel
 import id.adiandrea.scanmath.data.DataManager
 import id.adiandrea.scanmath.data.local.history.History
 import id.adiandrea.scanmath.util.Constant.Companion.VALUE_STORAGE_DATABASE
+import id.adiandrea.scanmath.util.calculateFromString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,9 +21,28 @@ import javax.inject.Inject
 class CalculatorViewModel
 @Inject constructor(private val dataManager: DataManager) : BaseViewModel() {
 
-    internal var latestCalculation: History? = null
+    internal var onWarningMessage = MutableLiveData<String>()
+    private var recognizer: TextRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
 
-    fun getCurrentStorage() = dataManager.getCurrentSelectedStorage()
+    fun processImageFromCamera(image: InputImage){
+        var finalResult: String?
+        recognizer.process(image)
+            .addOnSuccessListener { result ->
+                if(result.textBlocks.isNotEmpty()){
+                    finalResult = result.textBlocks[0].text
+                    finalResult?.let {
+                        val historyResult = calculateFromString(it)
+                        if(historyResult != null){
+                            saveData(historyResult)
+                        }else{
+                            onWarningMessage.postValue("finding expresssion failed, please try again")
+                        }
+                    }
+                }
+            }.addOnFailureListener { e ->
+                Timber.e(e)
+            }
+    }
 
     fun saveData(history: History){
         if(dataManager.getCurrentSelectedStorage() == VALUE_STORAGE_DATABASE){
@@ -33,61 +57,6 @@ class CalculatorViewModel
 
     private fun saveResultToLocalDatabase(history: History) = CoroutineScope(Dispatchers.IO).launch {
         dataManager.saveHistoryToLocal(history)
-    }
-
-    fun calculateFromString(text: String): Double {
-        Timber.i("data to proccess: $text")
-        var arg1 = 0
-        var arg2 = 0
-        var result = 0.0
-
-        //remove whitespace
-        //define delimiter to split
-        val symbol = defineSymbol(text)
-        //separate symbol & number
-        if(symbol != ""){
-            val listArguments = text.filter { !it.isWhitespace() }.split(symbol)
-            if(listArguments.size == 2){
-                listArguments.forEachIndexed { index, s ->
-                    if(index == 0) { arg1 = s.toInt() }
-                    else { arg2 = s.toInt() }
-                }
-                Timber.i("arg1 is $arg1\narg2 is $arg2")
-
-                //calculate
-                when(symbol){
-                    "+" -> { result = arg1.toDouble() + arg2.toDouble() }
-                    "-" -> { result = arg1.toDouble() - arg2.toDouble() }
-                    "*" -> { result = arg1.toDouble() * arg2.toDouble() }
-                    "/" -> { result = arg1.toDouble() / arg2.toDouble() }
-                }
-                latestCalculation = History(
-                    arg1 = arg1,
-                    arg2 = arg2,
-                    symbol = symbol,
-                    result = result
-                )
-            }else{
-                Timber.w("it has more than 2 arguments!")
-            }
-        }
-
-        Timber.i("calculate result is $result")
-        return result
-    }
-
-    private fun defineSymbol(source: String): String {
-        return if(source.contains("+")){
-            "+"
-        }else if(source.contains("-")){
-            "-"
-        }else if(source.contains("x") || source.contains("*")){
-            "*"
-        }else if(source.contains("/") || source.contains(":")){
-            "/"
-        }else{
-            ""
-        }
     }
 
 }
