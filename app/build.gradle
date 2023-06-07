@@ -156,4 +156,7 @@ dependencies {
 
     //jetpack security
     implementation "androidx.security:security-crypto:1.1.0-alpha06"
+
+    //image picker
+    implementation "com.github.esafirm:android-image-picker:3.0.0"
 }

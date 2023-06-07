@@ -2,11 +2,16 @@ package id.adiandrea.scanmath.feature.main
 
 import android.Manifest
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.esafirm.imagepicker.features.ImagePickerConfig
+import com.esafirm.imagepicker.features.ImagePickerMode
+import com.esafirm.imagepicker.features.registerImagePicker
+import com.google.mlkit.vision.common.InputImage
 import id.adiandrea.scanmath.BuildConfig
 import id.adiandrea.scanmath.R
 import id.adiandrea.scanmath.base.BaseActivity
@@ -15,10 +20,22 @@ import id.adiandrea.scanmath.feature.scan.InputCameraActivity
 import id.adiandrea.scanmath.util.Constant.Companion.VALUE_STORAGE_DATABASE
 import id.adiandrea.scanmath.util.Constant.Companion.VALUE_STORAGE_FILE
 import timber.log.Timber
+import java.io.File
 
 class MainActivity: BaseActivity<MainViewModel>() {
     override val viewModelClass: Class<MainViewModel> = MainViewModel::class.java
     private lateinit var binding: ActivityMainBinding
+
+    private val imagePickerLauncher = registerImagePicker { images ->
+        if(images.isNotEmpty()){
+            val imageFile = File(images[0].path)
+            val uri = Uri.fromFile(imageFile)
+            viewModel.processImageFromFile(
+                InputImage.fromFilePath(this, uri)
+            )
+        }
+
+    }
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -46,7 +63,13 @@ class MainActivity: BaseActivity<MainViewModel>() {
             if(BuildConfig.PICK_IMAGE_FROM == "CAMERA"){
                 requestPermissionLauncher.launch(Manifest.permission.CAMERA)
             }else{
-                //todo launch file picker
+                imagePickerLauncher.launch(
+                    ImagePickerConfig(
+                        mode = ImagePickerMode.SINGLE,
+                        isFolderMode = true,
+                        isShowCamera = false
+                    )
+                )
             }
         }
 
@@ -56,6 +79,10 @@ class MainActivity: BaseActivity<MainViewModel>() {
                 R.id.rb_encrypted -> { viewModel.setSelectedStorage(VALUE_STORAGE_FILE) }
             }
             viewModel.loadHistory()
+        }
+
+        viewModel.onWarningMessage.observe(this) {
+            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
         }
 
         viewModel.onHistoryLoaded.observe(this) {
