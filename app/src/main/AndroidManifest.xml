@@ -15,10 +15,6 @@
         android:supportsRtl="true"
         tools:ignore="GoogleAppIndexingWarning"
         android:theme="${appTheme}">
-        <activity android:name=".feature.listpokemon.ListPokemonActivity" android:exported="false">
-
-        </activity>
-        <activity android:name=".feature.detailpokemon.DetailPokemonActivity" android:exported="false"/>
         <activity android:name="id.adiandrea.scanmath.feature.scan.InputCameraActivity" android:exported="false"/>
         <activity android:name="id.adiandrea.scanmath.feature.main.MainActivity" android:exported="true">
             <intent-filter>

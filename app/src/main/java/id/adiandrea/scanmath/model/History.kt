@@ -1,4 +1,4 @@
-package id.adiandrea.scanmath.data.local.history
+package id.adiandrea.scanmath.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -8,7 +8,7 @@ import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import id.adiandrea.scanmath.base.BaseViewModel
 import id.adiandrea.scanmath.data.DataManager
-import id.adiandrea.scanmath.data.local.history.History
+import id.adiandrea.scanmath.model.History
 import id.adiandrea.scanmath.util.Constant
 import id.adiandrea.scanmath.util.Constant.Companion.VALUE_STORAGE_FILE
 import id.adiandrea.scanmath.util.calculateFromString

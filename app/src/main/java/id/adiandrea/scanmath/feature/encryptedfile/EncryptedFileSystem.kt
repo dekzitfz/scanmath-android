@@ -4,7 +4,7 @@ import androidx.security.crypto.EncryptedFile
 import androidx.security.crypto.MasterKey
 import com.google.gson.Gson
 import id.adiandrea.scanmath.App
-import id.adiandrea.scanmath.data.local.history.History
+import id.adiandrea.scanmath.model.History
 import timber.log.Timber
 import java.io.File
 import java.io.IOException

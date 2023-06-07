@@ -2,37 +2,48 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e060a22baeac36ea30648673d71a67ba",
+    "identityHash": "da8bb28eb7c1695f36ba3832fdec1803",
     "entities": [
       {
-        "tableName": "pokemon",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pokemon_id` INTEGER NOT NULL, `pokemon_name` TEXT NOT NULL, `pokemon_image_url` TEXT NOT NULL, PRIMARY KEY(`pokemon_id`, `pokemon_name`))",
+        "tableName": "history",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER, `arg1` INTEGER NOT NULL, `arg2` INTEGER NOT NULL, `symbol` TEXT NOT NULL, `result` REAL NOT NULL, PRIMARY KEY(`uid`))",
         "fields": [
           {
-            "fieldPath": "id",
-            "columnName": "pokemon_id",
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "arg1",
+            "columnName": "arg1",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "pokemonName",
-            "columnName": "pokemon_name",
+            "fieldPath": "arg2",
+            "columnName": "arg2",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "symbol",
+            "columnName": "symbol",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "pokemonImageUrl",
-            "columnName": "pokemon_image_url",
-            "affinity": "TEXT",
+            "fieldPath": "result",
+            "columnName": "result",
+            "affinity": "REAL",
             "notNull": true
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
-            "pokemon_id",
-            "pokemon_name"
-          ],
-          "autoGenerate": false
+            "uid"
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -41,7 +52,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e060a22baeac36ea30648673d71a67ba')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'da8bb28eb7c1695f36ba3832fdec1803')"
     ]
   }
 }

@@ -1,6 +1,6 @@
 package id.adiandrea.scanmath.util
 
-import id.adiandrea.scanmath.data.local.history.History
+import id.adiandrea.scanmath.model.History
 import timber.log.Timber
 
 fun calculateFromString(text: String): History? {

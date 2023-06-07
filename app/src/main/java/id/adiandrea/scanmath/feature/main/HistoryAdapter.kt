@@ -3,7 +3,7 @@ package id.adiandrea.scanmath.feature.main
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import id.adiandrea.scanmath.data.local.history.History
+import id.adiandrea.scanmath.model.History
 import id.adiandrea.scanmath.databinding.ItemHistoryBinding
 
 class HistoryAdapter(val data: MutableList<History>)
