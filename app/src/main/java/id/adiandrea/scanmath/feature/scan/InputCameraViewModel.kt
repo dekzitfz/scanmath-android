@@ -46,6 +46,7 @@ class InputCameraViewModel
             }.addOnFailureListener { e ->
                 isLoading.postValue(false)
                 onProcessCompleted.postValue(true)
+                onWarningMessage.postValue("finding expresssion failed, ${e.localizedMessage}")
                 Timber.e(e)
             }
     }

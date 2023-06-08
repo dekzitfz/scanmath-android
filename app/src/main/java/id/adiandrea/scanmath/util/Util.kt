@@ -6,8 +6,8 @@ import timber.log.Timber
 fun calculateFromString(text: String): History? {
     Timber.i("data to proccess: $text")
     var latestCalculation: History? = null
-    var arg1 = 0
-    var arg2 = 0
+    var arg1: Int? = 0
+    var arg2: Int? = 0
     var result = 0.0
 
     //remove whitespace
@@ -18,24 +18,28 @@ fun calculateFromString(text: String): History? {
         val listArguments = text.filter { !it.isWhitespace() }.split(symbol)
         if(listArguments.size == 2){
             listArguments.forEachIndexed { index, s ->
-                if(index == 0) { arg1 = s.toInt() }
-                else { arg2 = s.toInt() }
+                if(index == 0) { s.toIntOrNull()?.let { number -> arg1 = number } }
+                else { s.toIntOrNull()?.let { number -> arg2 = number } }
             }
             Timber.i("arg1 is $arg1\narg2 is $arg2")
 
-            //calculate
-            when(symbol){
-                "+" -> { result = arg1.toDouble() + arg2.toDouble() }
-                "-" -> { result = arg1.toDouble() - arg2.toDouble() }
-                "*" -> { result = arg1.toDouble() * arg2.toDouble() }
-                "/" -> { result = arg1.toDouble() / arg2.toDouble() }
+            if(arg1 != null && arg2 != null){
+                //calculate
+                when(symbol){
+                    "+" -> { result = arg1!!.toDouble() + arg2!!.toDouble() }
+                    "-" -> { result = arg1!!.toDouble() - arg2!!.toDouble() }
+                    "*" -> { result = arg1!!.toDouble() * arg2!!.toDouble() }
+                    "/" -> { result = arg1!!.toDouble() / arg2!!.toDouble() }
+                }
+                latestCalculation = History(
+                    arg1 = arg1!!,
+                    arg2 = arg2!!,
+                    symbol = symbol,
+                    result = result
+                )
+            }else{
+                Timber.w("one of arguments is invalid!")
             }
-            latestCalculation = History(
-                arg1 = arg1,
-                arg2 = arg2,
-                symbol = symbol,
-                result = result
-            )
         }else{
             Timber.w("it has more than 2 arguments!")
         }
